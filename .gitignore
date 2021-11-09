@@ -1,0 +1,13 @@
+.idea/
+db/dumps/
+db/logs/
+log/*
+
+###> symfony/framework-bundle ###
+app/.env.local
+app/.env.local.php
+app/.env.*.local
+app/public/bundles/
+app/var/
+app/vendor/
+###< symfony/framework-bundle ###

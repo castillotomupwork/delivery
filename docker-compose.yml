@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+  web:
+    container_name: webserver
+    image: tomascastillo/webserver-php7.4:1.1
+    tty: true
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      local_network:
+        ipv4_address: 172.18.0.2
+    volumes:
+      - "./server/conf-enabled:/etc/apache2/conf-enabled"
+      - "./server/sites-enabled:/etc/apache2/sites-enabled"
+      - "./:/var/www/html"
+    command: ['apachectl', '-D', 'FOREGROUND']
+  db:
+    container_name: databaseserver
+    depends_on:
+      - web
+    image: tomascastillo/databaseserver:1.0
+    networks:
+      local_network:
+        ipv4_address: 172.18.0.3
+    restart: always
+    ports:
+      - 3306:3306
+    tty: true
+    volumes:
+      - "./db/dumps:/var/lib/mysql"
+      - "./db/logs:/var/log/mysql"
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql
+      MYSQL_USER: db_admin
+      MYSQL_PASSWORD: mysql
+networks:
+  local_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.18.0.1/28
