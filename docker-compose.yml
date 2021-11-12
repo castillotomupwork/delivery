@@ -3,7 +3,7 @@ version: '3'
 services:
   web:
     container_name: webserver
-    image: tomascastillo/webserver-php7.4:1.1
+    image: tomascastillo/webserver-php7.4-symfony:1.2
     tty: true
     restart: always
     ports:
