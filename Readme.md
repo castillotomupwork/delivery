@@ -6,7 +6,7 @@ Simple Symfony ReactJS App
 
 1. Edit hosts file C:\Windows\System32\drivers\etc\hosts
 ```
-127.0.0.1   diversify.local
+127.0.0.1   delivery.local
 ```
 
 2. Execute in this in terminal to create servers
@@ -14,27 +14,62 @@ Simple Symfony ReactJS App
 docker-compose up -d
 ```
 
-3. Edit symfony .\.env file
+3. Edit symfony .env file
 ```
-DATABASE_URL=mysql://db_admin:mysql@127.0.0.1:3306/diversify
+DATABASE_URL=mysql://root:mysql@127.0.0.1:3306/delivery
 ```
 
-4. Install symfony plugins
+4. Go to database server container
+```
+docker exec -it databaseserver bash
+```
+
+5. Login to MySQL
+```
+mysql --user=root --password=mysql
+```
+
+6. Create Database
+```
+create database delivery;
+```
+
+7. Exit MySQL
+```
+exit
+```
+
+8. Exit database container
+```
+exit
+```
+
+9. Go to web server container
+```
+docker exec -it webserver bash
+```
+
+10. Go to symfony files
+```
+cd /var/www/html/app
+```
+
+11. Install symfony plugins
 ```
 composer install
 ```
 
-5. Migrate database schema
+12. Migrate database schema
 ```
 php bin/console doctrine:migrations:migrate
 ```
 
-6. Load fixtures
+13. Load fixtures
 ```
 php bin/console doctrine:fixtures:load
 ```
 
-7. Populate react files
+14. Populate react files
 ```
 yarn encore production
 ```
