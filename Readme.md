@@ -9,67 +9,72 @@ Simple Symfony ReactJS App
 127.0.0.1   delivery.local
 ```
 
-2. Execute in this in terminal to create servers
+2. Add log folder in the root directory of this project
+```
+/var/www/html/log
+```
+
+3. Execute in this in terminal to create servers
 ```
 docker-compose up -d
 ```
 
-3. Edit symfony .env file
+4. Edit symfony .env file
 ```
 DATABASE_URL=mysql://root:mysql@127.0.0.1:3306/delivery
 ```
 
-4. Go to database server container
+5. Go to database server container
 ```
 docker exec -it databaseserver bash
 ```
 
-5. Login to MySQL
+6. Login to MySQL
 ```
 mysql --user=root --password=mysql
 ```
 
-6. Create Database
+7. Create Database
 ```
 create database delivery;
 ```
 
-7. Exit MySQL
+8. Exit MySQL
 ```
 exit
 ```
 
-8. Exit database container
+9. Exit database container
 ```
 exit
 ```
 
-9. Go to web server container
+10. Go to web server container
 ```
 docker exec -it webserver bash
 ```
 
-10. Go to symfony files
+11. Go to symfony files
 ```
 cd /var/www/html/app
 ```
 
-11. Install symfony plugins
+12. Install symfony plugins
 ```
 composer install
 ```
 
-12. Migrate database schema
+13. Migrate database schema
 ```
 php bin/console doctrine:migrations:migrate
 ```
 
-13. Load fixtures
+14. Load fixtures
 ```
 php bin/console doctrine:fixtures:load
 ```
 
-14. Populate react files
+15. Populate react files
 ```
 yarn encore production
 ```
