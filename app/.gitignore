@@ -7,6 +7,9 @@
 /public/bundles/
 /var/
 /vendor/
+/composer.lock
+/symfony.lock
+/yarn.lock
 ###< symfony/framework-bundle ###
 
 ###> symfony/webpack-encore-bundle ###

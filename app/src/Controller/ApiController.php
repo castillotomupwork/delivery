@@ -93,6 +93,10 @@ class ApiController extends AbstractController
 
         $data = $this->calculateDelivery($requestData);
 
+        if ($data instanceof JsonResponse) {
+            return $data;
+        }
+
         return new JsonResponse(['delivery' => $data['delivery'], 'item_delivery' => $data['item_delivery'],
             'status' => 'success']);
     }

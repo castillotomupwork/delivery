@@ -23,28 +23,60 @@ import {
     TabPanel,
 } from '@material-ui/lab';
 
+import Backdrop from '@material-ui/core/Backdrop';
+
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 function DeliveryTable() {
     const context = useContext(DeliveryContext);
     const [tabValue, setTabValue] = React.useState('0');
     const [inputs, setInputs] = useState({});
+    const [loading, setLoading] = useState(false);
+    const [loadingEstimate, setLoadingEstimate] = useState(false);
+    const [loadingBook, setLoadingBook] = useState(false);
 
     const handleChange = (event) => {
         const name = event.target.name;
         const value = event.target.value;
-        setInputs(values => ({...values, [name]: value}))
+        setInputs(values => ({...values, [name]: value}));
     }
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        context.estimateDelivery(event, inputs);
+        
+        setLoading(true);
+
+        setLoadingEstimate(true);
+        
+        try {
+            await context.estimateDelivery(event, inputs);
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setLoadingEstimate(false);
+
+            setLoading(false);
+        }
     };
 
     const handleTabChange = (event, newValue) => {
         setTabValue(newValue);
     };
 
-    const handleBookSubmit = (transportId) => {
-        context.bookDelivery(transportId, inputs);
+    const handleBookSubmit = async (transportId) => {
+        setLoading(true);
+
+        setLoadingBook(true);
+
+        try {
+            await context.bookDelivery(transportId, inputs);
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setLoadingBook(false);
+
+            setLoading(false);
+        }
 
     }
 
@@ -58,6 +90,11 @@ function DeliveryTable() {
                     <Typography variant="h5" align="center">Order</Typography>
                     <br/>
                     <form onSubmit={handleSubmit}>
+                        {context.error_message && (
+                            <Typography color="error" align="center" sx={{ mb: 2 }}>
+                                {context.error_message}
+                            </Typography>
+                        )}
                         <Table size="small">
                             <TableBody>
                                 {context.items.slice().map((item, index) => (
@@ -100,7 +137,15 @@ function DeliveryTable() {
                         </Table>
                         <br/>
                         <Typography align="center">
-                            <Button type="submit" variant="outlined" key={'estimate-button'}>Estimate Transport</Button>
+                            <Button
+                                type="submit"
+                                variant="outlined"
+                                key={'estimate-button'}
+                                disabled={loadingEstimate}
+                                endIcon={loadingEstimate ? <CircularProgress size={16} /> : null}
+                            >
+                                {loadingEstimate ? 'Processing...' : 'Estimate Transport'}
+                            </Button>
                         </Typography>
                     </form>
                     <br/>
@@ -129,13 +174,24 @@ function DeliveryTable() {
                                     </Table>
                                     <br />
                                     <Typography align="center">
-                                        <Button variant="outlined" key={'book-button-' + index}
-                                            onClick={() => {handleBookSubmit(deliver.id)}}>Book Delivery</Button>
+                                        <Button 
+                                            variant="outlined" 
+                                            key={'book-button-' + index}
+                                            onClick={() => {handleBookSubmit(deliver.id)}}
+                                            disabled={loadingBook}
+                                            endIcon={loadingBook ? <CircularProgress size={16} /> : null}
+                                        >
+                                            {loadingBook ? 'Booking...' : 'Book Delivery'}
+                                        </Button>
                                     </Typography>
                                 </TabPanel>
                             ))}
                         </TabContext>
                     </Box>
+
+                    <Backdrop open={loading} style={{ zIndex: 9999, color: '#fff' }}>
+                        <CircularProgress color="inherit" />
+                    </Backdrop>
                 </Container>
             </Box>
         </Fragment>

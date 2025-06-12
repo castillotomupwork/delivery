@@ -10,13 +10,14 @@ class DeliveryContextProvider extends React.Component {
             items: [],
             delivery: [],
             item_delivery: [],
+            error_message: '',
         };
 
         this.getItems();
     }
 
-    getItems() {
-        axios.get('/api/items')
+    async getItems() {
+        await axios.get('/api/items')
             .then(response => {
                 this.setState({
                     items: response.data.items,
@@ -27,23 +28,34 @@ class DeliveryContextProvider extends React.Component {
             });
     }
 
-    estimateDelivery(event, data) {
+    async estimateDelivery(event, data) {
         event.preventDefault();
-        axios.post('/api/estimate', data)
+        
+        this.setState({
+            error_message: '',
+        });
+
+        await axios.post('/api/estimate', data)
             .then(response => {
-                let delivery = [...this.state.delivery];
-                delivery.push(response.data.delivery);
-                this.setState({
-                    delivery: response.data.delivery,
-                });
+                if (response.data.status == 'success') {
+                    let delivery = [...this.state.delivery];
+                    delivery.push(response.data.delivery);
+                    this.setState({
+                        delivery: response.data.delivery,
+                    });
+                } else {
+                    this.setState({
+                        error_message: response.data.message,
+                    });
+                }
             })
             .catch(error => {
                 console.error(error);
             });
     }
 
-    bookDelivery(transportId, data) {
-        axios.post('/api/book/' + transportId, data)
+    async bookDelivery(transportId, data) {
+        await axios.post('/api/book/' + transportId, data)
             .then(response => {
                 this.setState({
                     delivery: [],
