@@ -1,80 +1,133 @@
 # Delivery App
 
-Simple Symfony ReactJS App
+A simple Dockerized Symfony + ReactJS application for managing deliveries.
 
+## Table of Contents
+
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Database Setup](#database-setup)
+- [Symfony Setup](#symfony-setup)
+- [Build Frontend Assets](#build-frontend-assets)
+- [Access the Application](#access-the-application)
+
+---
+## Prerequisites
+
+- Docker and Docker Compose installed
+- Access to modify the system `hosts` file
+- Composer installed (inside the container)
+- Yarn or npm for frontend builds (inside the container)
+
+---
 ## Installation
 
-1. Edit hosts file C:\Windows\System32\drivers\etc\hosts
-```
-127.0.0.1   delivery.local
+### 1. Configure Local Domain
+
+Edit your `hosts` file to point `delivery.local` to `127.0.0.1`.
+
+- **Windows:**  
+  `C:\Windows\System32\drivers\etc\hosts`
+
+- **macOS / Linux:**  
+  `/etc/hosts`
+
+**Add the following line:**
+
+```bash
+127.0.0.1 delivery.local
 ```
 
-2. Add log folder in the root directory of this project
-```
-/var/www/html/log
-```
+> **Note:** Editing this file may require administrator/root privileges.
 
-3. Execute in this in terminal to create servers
-```
+### 2. Start Docker Containers
+
+From the project root directory, run:
+
+```bash
 docker-compose up -d
 ```
 
-4. Edit symfony .env file
-```
-DATABASE_URL=mysql://root:mysql@127.0.0.1:3306/delivery
-```
+---
+## Database Setup
 
-5. Go to database server container
-```
+### 3. Access Database Server
+
+```bash
 docker exec -it databaseserver bash
 ```
 
-6. Login to MySQL
-```
+### 4. Login to MySQL
+
+```bash
 mysql --user=root --password=mysql
 ```
 
-7. Create Database
-```
-create database delivery;
+### 5. Create the Database
+
+```sql
+CREATE DATABASE delivery;
 ```
 
-8. Exit MySQL
-```
+### 6. Exit MySQL and the Container
+
+```bash
 exit
 ```
 
-9. Exit database container
-```
-exit
-```
+---
+## Symfony Setup
 
-10. Go to web server container
-```
+### 7. Access Web Server
+
+```bash
 docker exec -it webserver bash
 ```
 
-11. Go to symfony files
-```
+### 8. Navigate to Symfony App Directory
+
+```bash
 cd /var/www/html/app
 ```
 
-12. Install symfony plugins
-```
+### 9. Install Symfony Dependencies
+
+```bash
 composer install
 ```
 
-13. Migrate database schema
-```
+### 10. Run Database Migrations
+
+```bash
 php bin/console doctrine:migrations:migrate
 ```
 
-14. Load fixtures
-```
+### 11. Load Data Fixtures
+
+```bash
 php bin/console doctrine:fixtures:load
 ```
 
-15. Populate react files
-```
+---
+## Build Frontend Assets
+
+### 12. Compile ReactJS Frontend
+
+```bash
 yarn encore production
 ```
+
+---
+## Access the Application
+
+Once setup is complete, open your browser and navigate to:
+
+```arduino
+http://delivery.local
+```
+
+---
+Feel free to open an issue or submit a PR for improvements or bug fixes.
+
+
+Let me know if you'd like a version that includes `make` commands, `.env` configuration, or Docker volume setup for persistence.

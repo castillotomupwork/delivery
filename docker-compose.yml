@@ -14,13 +14,7 @@ services:
       - "./server/conf-enabled:/etc/apache2/conf-enabled"
       - "./server/sites-enabled:/etc/apache2/sites-enabled"
       - "./:/var/www/html"
-    command: >
-      bash -c "
-        chmod +x /var/www/html/init-app.sh &&
-        /var/www/html/init-app.sh &&
-        apachectl -D FOREGROUND
-      "
-
+    command: ['apachectl', '-D', 'FOREGROUND']
   db:
     container_name: databaseserver
     depends_on:
@@ -36,19 +30,10 @@ services:
     volumes:
       - "./db/dumps:/var/lib/mysql"
       - "./db/logs:/var/log/mysql"
-      - "./db/init:/docker-entrypoint-initdb.d"
     environment:
       MYSQL_ROOT_PASSWORD: mysql
       MYSQL_USER: db_admin
       MYSQL_PASSWORD: mysql
-    command: >
-      bash -c "
-        sleep 5 &&
-        chmod +x /docker-entrypoint-initdb.d/init-db.sh &&
-        /docker-entrypoint-initdb.d/init-db.sh &&
-        mysqld
-      "
-
 networks:
   local_network:
     driver: bridge
