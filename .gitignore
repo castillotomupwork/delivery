@@ -1,7 +1,7 @@
 .idea/
 db/dumps/
 db/logs/
-
+log/*
 
 /node_modules/
 /public/
